@@ -5,6 +5,7 @@
         "description": "Base framework for corto web UI",
         "author": "Sander Mertens",
         "version": "1.0.0",
-        "language": "corto"
+        "language": "c",
+        "dependencies": ["corto/web/server", "corto/httprouter"]
     }
 }

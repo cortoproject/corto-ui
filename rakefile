@@ -1,3 +1,0 @@
-PACKAGE = 'corto/ui'
-LANGUAGE = 'corto'
-require "#{ENV['CORTO_BUILD']}/package"
