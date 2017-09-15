@@ -1,0 +1,4 @@
+in package /corto/ui
+
+class plugin: vstore/package :/
+    icon: string

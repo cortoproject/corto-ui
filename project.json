@@ -1,0 +1,10 @@
+{
+    "id": "corto/ui",
+    "type": "package",
+    "value": {
+        "description": "Base framework for corto web UI",
+        "author": "Sander Mertens",
+        "version": "1.0.0",
+        "language": "corto"
+    }
+}

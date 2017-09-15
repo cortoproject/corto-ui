@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>corto connect</title>
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,300">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="js/vue-material/vue-material.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/vue-material/vue-material.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/corto.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div id="app-sidebar">
+        <sidebar/>
+      </div>
+      <div id="app-content">     
+        <login-dialog ref="loginDialog" v-on:connect="connect"></login-dialog>
+        <error-snackbar ref="errorSnackbar"></error-snackbar>
+
+        <plugin
+          ref="plugin" 
+          :connected="connected" 
+          :db="db" 
+          :url="host"
+            v-on:move="move" 
+            v-on:search="search" 
+            v-on:login="login"
+            v-on:menu="menu">
+          </plugin>
+      </div>
+    </div>
+  </body>
+  <script>Vue.config.devtools = true</script> 
+  <script src="js/browser.js" id="plugin-src"></script>  
+  <script src="js/sidebar.js"></script>
+  <script src="js/app.js"></script>
+</html>
