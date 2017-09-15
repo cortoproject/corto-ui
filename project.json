@@ -6,6 +6,6 @@
         "author": "Sander Mertens",
         "version": "1.0.0",
         "language": "c",
-        "dependencies": ["corto/web/server", "corto/httprouter"]
+        "dependencies": ["corto/httpserver", "corto/httprouter"]
     }
 }

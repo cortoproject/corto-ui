@@ -12,7 +12,7 @@
 #include <corto/ui/_project.h>
 #include <corto/c/c.h>
 #include <corto/httprouter/httprouter.h>
-#include <corto/web/server/server.h>
+#include <corto/httpserver/httpserver.h>
 
 /* $header() */
 /* Definitions that are required by package headers (native types) go here. */
