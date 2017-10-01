@@ -3,7 +3,7 @@ use corto/httprouter
 
 x/token file: "[-a-zA-Z_0-9\\. \\/]*"
 
-httprouter/Router router :/
+httprouter/Router service :/
   int16 construct()
   GET home: "/", file = "index.html"
   GET res:  "/{path:(js|css|images)}/{:file}"
