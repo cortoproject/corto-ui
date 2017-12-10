@@ -2,10 +2,13 @@
     "id": "corto/ui",
     "type": "package",
     "value": {
-        "description": "Base framework for corto web UI",
         "author": "Sander Mertens",
+        "organization": "cortoproject",
+        "repository": "https://github.com/cortoproject/ui",
+        "license": "MIT",        
+        "description": "Base framework for corto web UI",
         "version": "1.0.0",
         "language": "c",
-        "dependencies": ["corto/httpserver", "corto/httprouter"]
+        "use": ["corto/httpserver", "corto/httprouter", "corto/x"]
     }
 }

@@ -2,10 +2,9 @@
 
 #include <corto/ui/ui.h>
 
-int uiMain(int argc, char *argv[]) {
+int cortomain(int argc, char *argv[]) {
 
     /* Insert implementation */
-    
+
     return 0;
 }
-
