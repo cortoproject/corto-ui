@@ -4,7 +4,7 @@
 int16_t ui_service_construct(
     ui_service this)
 {
-    corto_ptr_setstr(&httprouter_Service(this)->path, CORTO_UI_ETC);
+    corto_set_str(&httprouter_Service(this)->path, CORTO_UI_ETC);
     return corto_super_construct(this);
 }
 
@@ -23,4 +23,3 @@ corto_string ui_service_res(
 {
     return httprouter_route_fileAction(ui_service_res_o, this, request, data->path, data->file);
 }
-
