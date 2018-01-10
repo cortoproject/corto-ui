@@ -2,13 +2,13 @@
 var table_db = [];
 
 Vue.component("object-index-headers", {
-  props: ['scroll', 'scrollHeight', 'scrollAbsolute'], 
+  props: ['scroll', 'scrollHeight', 'scrollAbsolute'],
 
   render: function (createElement) {
 
 
     return createElement(
-      'div', 
+      'div',
       {
         attrs: {
           dataScroll: this.scroll,
@@ -34,8 +34,8 @@ Vue.component('object-index', {
       'div',
       {
         attrs: {
-          class: "object-index-cursor", 
-          style: 
+          class: "object-index-cursor",
+          style:
             "top: " + (cursorTop * 100) + "%; height: " + (cursorHeight * 100) + "%;"
         }
       }
@@ -153,7 +153,7 @@ Vue.component('query-input', {
       this.activeQuery = this.query;
       if (!queryStore.state.valid) {
         this.$emit('invalidQuery', {});
-      } else {        
+      } else {
         this.$emit('search', {parent: queryObj.from, expr: queryObj.select, type: queryObj.type});
       }
       this.applyHighlight(this.$refs.queryInput, query, queryObj);
@@ -202,7 +202,7 @@ Vue.component('query-input', {
           {
             attrs: {
               id: "code",
-              class: codeClass, 
+              class: codeClass,
               contenteditable: "true",
               spellcheck: "false"
             },
@@ -253,7 +253,7 @@ Vue.component('search-toolbar', {
       }
       if (type && type != "*") {
         this.query += " type " + type;
-      } 
+      }
 
       this.$refs.queryInput.search(this.query);
     },
@@ -299,7 +299,7 @@ Vue.component('search-toolbar', {
     up() {
       var q = corto.parseQuery(this.$refs.queryInput.query);
       var parent = q.from, expr = q.expr;
-      
+
       if (!q.type && (q.select == "*" || q.select == "/" || q.select == "/*")) {
         parent = this.parentFromPath(q.from);
         expr = "*";
@@ -337,10 +337,10 @@ Vue.component('search-toolbar', {
           </md-button>
           <md-button ref="upButton" class="md-icon-button nav-button" :disabled="!connected" @click.native="up" style="visibility: visible">
             <md-icon>arrow_upward</md-icon>
-          </md-button>          
+          </md-button>
           <md-button ref="homeButton" class="md-icon-button nav-button" :disabled="!connected" @click.native="home" style="visibility: visible">
             <md-icon>explore</md-icon>
-          </md-button>        
+          </md-button>
           <md-whiteframe md-elevation="1" :class="'search search-parent' + (connected ? '' : ' search-disconnected') + (queryStore.state.valid ? '' : ' search-invalid')" :disabled="!connected" style="visibility: visible">
             <query-input ref="queryInput" :connected="connected" v-on:search="$emit('search', $event)" v-on:invalidQuery="$emit('invalidQuery', $event)"/>
           </md-whiteframe>
@@ -353,7 +353,7 @@ Vue.component('search-toolbar', {
 var editorStore = {
   state: {
     types: [],
-    width: 350,
+    width: 450,
     enabled: false,
     id: "",
   },
@@ -419,7 +419,7 @@ Vue.component('object-value', {
       window.setTimeout(function() {
         this.edit();
       }.bind(this), 200);
-      this.changed = true;      
+      this.changed = true;
     },
     change(event) {
       if (this.editor && this.header.type.isPrimitive()) {
@@ -436,20 +436,20 @@ Vue.component('object-value', {
   },
   template: `
     <div v-if="header.type.kind == 'list'">
-      <span v-if="!editor" 
-        :class="'table-cell table-' + header.type.kind + ' table-ref-false'" 
+      <span v-if="!editor"
+        :class="'table-cell table-' + header.type.kind + ' table-ref-false'"
         :contenteditable="editor">
         [&nbsp;{{value[0]}}&nbsp;elements&nbsp;]
       </span>
-      <span v-else 
+      <span v-else
         :class="'table-cell table-' + header.type.kind + ' table-ref-false'">
         {{truncate(value, header.type.kind)}}
       </span>
     </div>
     <div v-else-if="header.type.reference && !isBase"
       @click="navigate(corto.getMember(value, header.index), true)">
-      <span 
-        :class="'table-cell table-' + header.type.kind + ' ' + 'table-ref-true-' + connected" 
+      <span
+        :class="'table-cell table-' + header.type.kind + ' ' + 'table-ref-true-' + connected"
         :contenteditable="editor">
         {{value}}
       </span>
@@ -463,23 +463,26 @@ Vue.component('object-value', {
     <div v-else-if="header.type.kind == 'enum' && editor">
       <md-input-container class="shrink-md-container">
         <md-select id="object-value-select" name="object-value-select" v-model="currentValue">
-          <md-option v-for="c in header.type.constants" :value="c" v-on:selected="changeSelect">{{c}}</md-option>        
+          <md-option v-for="c in header.type.constants" :value="c" v-on:selected="changeSelect">{{c}}</md-option>
         </md-select>
       </md-input-container>
     </div>
     <div v-else-if="header.type.kind == 'bitmask' && editor">
-      <md-input-container class="shrink-md-container">    
+      <md-input-container class="shrink-md-container">
         <md-select id="object-value-select" multiple v-model="currentValue">
-          <md-option v-for="c in header.type.constants" :value="c" v-on:selected="changeSelect">{{c}}</md-option>        
+          <md-option v-for="c in header.type.constants" :value="c" v-on:selected="changeSelect">{{c}}</md-option>
         </md-select>
-      </md-input-container>      
+      </md-input-container>
     </div>
     <div v-else @click="change" @keyup="edit">
-      <span 
-        :class="'table-cell ' + 'table-' + header.type.kind + ' table-ref-false table-editor-' + editor" 
+      <span
+        :class="'table-cell ' + 'table-' + header.type.kind + ' table-ref-false table-editor-' + editor"
         :contenteditable="editor && header.type.isPrimitive()">
         <template v-if="!changed">{{truncate(value, header.type.kind)}}</template>
         <template v-else>{{lastValue}}</template>
+      </span>
+      <span v-if="header.unit" :class="'table-cell table-unit' + ' table-' + header.type.kind">
+        {{header.unit[2]}}
       </span>
     </div>
   `
@@ -491,7 +494,7 @@ Vue.component('object-row-template', {
     return {
       changed: false
     }
-  },  
+  },
   methods: {
     edit($event) {
       this.changed = true;
@@ -503,26 +506,42 @@ Vue.component('object-row-template', {
     clear() {
       this.clearSelf();
       this.$refs.objectValue.clear();
+    },
+    rowClass() {
+        var result = '';
+        if (this.row.m_readonly || this.row.m_const) {
+            result = 'table-value-readonly';
+        } else if (this.changed) {
+            result = 'table-value-changed';
+        }
+        return result;
+    },
+    headerClass() {
+        var result = '';
+        if (this.row.m_readonly || this.row.m_const) {
+            result = 'table-header-readonly';
+        }
+        return result;
     }
   },
   template: `
-    <tr :id="util.memberId(parentMember, row.rowName)" :class="changed ? 'table-value-changed' : ''">
+    <tr :id="util.memberId(parentMember, row.rowName)" :class="this.rowClass()">
       <td class="table-header table-header-editor">
-        <md-icon 
-          v-if="!row.type.isPrimitive() && !row.type.reference" 
-          @click.native="util.toggle(event.target, util.memberId(parentMember, row.rowName))" 
+        <md-icon
+          v-if="!row.type.isPrimitive() && !row.type.reference"
+          @click.native="util.toggle(event.target, util.memberId(parentMember, row.rowName))"
           class="editor-toggle-button">
           keyboard_arrow_right
         </md-icon>
-        <span>{{row.rowName}}</span>
+        <span :class="headerClass()">{{row.rowName}}</span>
       </td>
       <td class="editor-value">
-        <object-value 
+        <object-value
           ref="objectValue"
           :value="corto.getMember(value, row.index)"
           :header="row"
           :connected="connected"
-          :editor="true"
+          :editor="!(row.m_readonly || row.m_const)"
           :isBase="row.rowName == 'super'"
           v-on:navigate="$emit('navigate', $event)"
           v-on:edit="edit($event)"
@@ -533,7 +552,7 @@ Vue.component('object-row-template', {
 });
 
 Vue.component('object-row-detail-template', {
-  props: ['row', 'value', 'connected', 'parentMember'],    
+  props: ['row', 'value', 'connected', 'parentMember'],
   template: `
     <tr :id="'row-' + util.memberId(parentMember, row.rowName)" hidden="true">
       <td colspan="2" class="editor-nested-table">
@@ -554,8 +573,9 @@ Vue.component('object-row-detail-template', {
   `
 });
 
+/* Row for each object member */
 Vue.component('object-rows', {
-  functional: true,  
+  functional: true,
   props: ['row', 'value', 'connected', 'parentMember'],
   render (h, ctx, children) {
     var props = ctx.props;
@@ -605,7 +625,7 @@ Vue.component('object-rows', {
                   onEdit(event);
                 }
               }
-            }) 
+            })
           );
         }
 
@@ -642,7 +662,7 @@ Vue.component('object-rows', {
                   onEdit(event);
                 }
               }
-            }) 
+            })
           );
         }
       }
@@ -652,9 +672,10 @@ Vue.component('object-rows', {
   }
 });
 
+/* Top level object element */
 Vue.component('object-base', {
   functional: true,
-  props: ['value', 'type', 'connected'],  
+  props: ['value', 'type', 'connected'],
   render (h, ctx, children) {
     var result = [];
     var props = ctx.props;
@@ -690,8 +711,8 @@ Vue.component('object-base', {
     };
 
     func(
-      func, 
-      props.value, 
+      func,
+      props.value,
       {rows: props.type.rows, typeName: props.type.id, type: corto.metadata[props.type.id]},
       result,
       undefined
@@ -720,14 +741,14 @@ Vue.component('object-editor', {
         rows[i].className =
           rows[i].className.replace
               ( /(?:^|\s)object-active(?!\S)/g , '' );
-      }      
+      }
       this.value = {};
       this.valueComponents = [];
     },
     open() {
       editorStore.setEnabled(true);
       window.setTimeout(function(){
-        this.hide = false; 
+        this.hide = false;
       }.bind(this), 50)
     },
     close() {
@@ -765,7 +786,7 @@ Vue.component('object-editor', {
     }
   },
   template: `
-    <div 
+    <div
       class="object-editor"
       v-if="!hide"
       :style="'opacity: 1.0; width: ' + editor.width + 'px; left: calc(100wh - ' + editor.enabled * editor.width + ');'">
@@ -782,11 +803,14 @@ Vue.component('object-editor', {
               v-on:edit="edit">
             </object-rows>
           </div>
+          <div v-if="!object.readonly" class="editor-actions">
+            <md-button class="md-primary" @click.native="update">Update</md-button>
+             <md-button class="md-primary delete" @click.native="del">Delete</md-button>
+          </div>
+          <div v-else class="editor-actions">
+            This object is read-only
+          </div>
         </div>
-      </div>
-      <div class="editor-actions">
-        <md-button class="md-primary" @click.native="update">Update</md-button>
-         <md-button class="md-primary delete" @click.native="del">Delete</md-button>
       </div>
     </div>
   `
@@ -845,9 +869,9 @@ Vue.component('object-table', {
               </span>
             </td>
             <td v-for="header in type.headers" v-if="header.index" :key="header">
-                <object-value 
-                  :value="object.getMember(header.index)" 
-                  :header="header" 
+                <object-value
+                  :value="object.getMember(header.index)"
+                  :header="header"
                   :connected="connected"
                   :editor="false"
                   :isBase="header.name == 'super'"
@@ -881,7 +905,7 @@ Vue.component('plugin', {
         onError: function(error) {
           this.throw(error, 5000);
         }.bind(this)
-      });      
+      });
     },
 
     // User entered a query
@@ -1005,11 +1029,11 @@ Vue.component('plugin', {
       timer: undefined,
       validQuery: true
     }
-  }, 
+  },
 
   template: `
     <div id="browser">
-    <search-toolbar 
+    <search-toolbar
       ref="searchToolbar"
       :connected="connected"
       :url="url"
@@ -1038,7 +1062,7 @@ Vue.component('plugin', {
       </md-list>
       <div id="browser-no-objects" v-else-if="!validQuery">
         <md-icon>announcement</md-icon>&nbsp;&nbsp;Invalid query '<span class="browser-no-objects-param">{{$refs.searchToolbar.getQueryString()}}</span>'
-      </div>    
+      </div>
       <div id="browser-no-objects" v-else-if="!connected && !url">
         <md-icon>announcement</md-icon>&nbsp;&nbsp;Not connected to a server
       </div>
@@ -1049,11 +1073,11 @@ Vue.component('plugin', {
         <md-icon>announcement</md-icon>&nbsp;&nbsp;Waiting for objects matching query '<span class="browser-no-objects-param">{{$refs.searchToolbar.getQueryString()}}</span>'
       </div>
     </div>
-    <object-editor 
-      ref="editor" 
-      :editor="editor" 
-      :connected="connected" 
-      v-on:navigate="navigate($event.link, $event.absolutePath)" 
+    <object-editor
+      ref="editor"
+      :editor="editor"
+      :connected="connected"
+      v-on:navigate="navigate($event.link, $event.absolutePath)"
       v-on:del="del"
       v-on:update="update">
     </object-editor>

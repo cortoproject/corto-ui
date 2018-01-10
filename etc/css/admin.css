@@ -42,7 +42,7 @@ div.sidebar i:hover {
     position: absolute;
     top: 0px;
     left: 65px;
-    width: calc(100% - 65px);    
+    width: calc(100% - 65px);
 }
 
 div.searchToolbar {
@@ -119,11 +119,11 @@ div.search {
 }
 
 div.search-disconnected {
-    border: 1px solid #607682; 
+    border: 1px solid #607682;
 }
 
 div.search-invalid {
-    border: 1px solid rgba(231, 125, 133, 0.28);    
+    border: 1px solid rgba(231, 125, 133, 0.28);
 }
 
 /* Styles for contenteditable input */
@@ -139,14 +139,14 @@ div.query code {
 }
 
 code.query-input-dirty {
-    color: #9EB9C6 !important;    
+    color: #9EB9C6 !important;
 }
 code.query-input-dirty span {
     color: #fff !important;
-    font-weight: normal;  
+    font-weight: normal;
 }
 code span.query-input-remainder {
-    color: #E77D85 !important;    
+    color: #E77D85 !important;
 }
 
 div.query code br {
@@ -167,7 +167,7 @@ div.query {
 }
 
 div.search {
-    width: calc(100% - 98px);   
+    width: calc(100% - 98px);
 }
 div.query code {
     width: 100%;
@@ -194,22 +194,22 @@ i.connection-problem {
     top: -1px;
 }
 
-button.menu-button { 
-    top: 7px; 
-    left: 67px; 
-    margin: 0px !important; 
+button.menu-button {
+    top: 7px;
+    left: 67px;
+    margin: 0px !important;
     padding: 0px !important;
-    width: 25px !important; 
+    width: 25px !important;
     min-width: 25px !important;
     height: 25px !important;
     min-height: 25px !important;
 }
-button.nav-button { 
-    top: 2px; 
+button.nav-button {
+    top: 2px;
     left: -5px;
-    margin-right: -4px !important; 
-    padding: 0px !important; 
-    width: 25px !important; 
+    margin-right: -4px !important;
+    padding: 0px !important;
+    width: 25px !important;
     min-width: 25px !important;
     height: 25px !important;
     min-height: 25px !important;
@@ -275,7 +275,7 @@ img.menu-logo {
     height: calc(100vh - 40px);
     margin: 0px;
     transition: width 0.3s;
-    background: linear-gradient(#fff, #fdfdfd); /* Standard syntax */    
+    background: linear-gradient(#fff, #fdfdfd); /* Standard syntax */
 }
 
 .object-editor {
@@ -381,7 +381,7 @@ div.object-index {
 #browser-no-objects i {
     position: relative;
     top: 0px;
-    color: #414141 !important;    
+    color: #414141 !important;
 }
 
 span.browser-no-objects-param {
@@ -389,7 +389,7 @@ span.browser-no-objects-param {
 }
 
 div.object-index-show {
-    opacity: 1.0; 
+    opacity: 1.0;
 }
 
 div.object-index-cursor {
@@ -415,15 +415,15 @@ div.object-index-header {
 }
 
 .object-link {
-    max-width: 30px; 
-    word-wrap: break-word; 
+    max-width: 30px;
+    word-wrap: break-word;
     padding-right: 0px;
     padding-left: 10px;
     cursor: pointer;
 }
 
 .type-link {
-    word-wrap: break-word; 
+    word-wrap: break-word;
     padding-right: 0px;
     padding-left: 10px;
     cursor: pointer;
@@ -483,7 +483,7 @@ span.table-sequence {color: #6E8A98; white-space: nowrap;}
 
 /* reference */
 span.table-ref-true-true {
-    color: #00C4A3; 
+    color: #00C4A3;
     border-width: 0px;
     padding-bottom: 1px;
     cursor: pointer;
@@ -493,8 +493,11 @@ span.table-ref-true-true {
 }
 
 span.table-ref-true-false {
-    color: #aaa; 
+    color: #aaa;
     cursor: default;
+}
+
+span.table-unit {
 }
 
 div.editor-actions {
@@ -533,7 +536,7 @@ div.editor-table tr {
 }
 
 td.editor-nested-table div {
-    -webkit-transition: 0.3s;    
+    -webkit-transition: 0.3s;
     transition: 0.3s;
     overflow: hidden;
 }
@@ -544,7 +547,15 @@ i.editor-toggle-button {
     left: -15px;
     margin-right: -27px;
 }
-.table-header {color: #3E5A68; font-size: 1.0em; font-weight: bold; white-space: nowrap;}
+.table-header {
+    color: #3E5A68;
+    font-size: 1.0em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+.table-header-readonly {
+    color: #7d8d99;
+}
 .table-header-editor span {
     margin-left: 10px;
 }
@@ -557,6 +568,10 @@ div.editor-list-table {
 
 tr.table-value-changed {background-color: #EDF7F5; }
 tr.table-value-changed:hover {background-color: #EDF7F5 !important;}
+tr.table-value-readonly {
+    background-color: #f8f9fc;
+    cursor: default;
+}
 
 div.search-parent input.md-input[disabled="disabled"] {
     color: #eee;

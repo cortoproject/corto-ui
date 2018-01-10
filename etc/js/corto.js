@@ -112,12 +112,22 @@ corto.connected = function(msg) {
   if (corto.onConnected != undefined) corto.onConnected(msg);
 }
 
+// Expand members of composite values into headers that describe scalar values
 corto.expandMembers = function(dataType, type, index, prefix, rows) {
   var count = 0;
-  
-  for (key in type.members) {
+
+  for (var i = 0; i < type.members.length; i++) {
+    var member = type.members[i];
+
+    // member[0] = member name
+    // member[1] = member type
+    // member[2] = member metadata (modifiers, tags, units)
+
+    var key = member[0];
+    var memberType = corto.metadata[member[1]]; // Lookup type in client type db
+    var meta = member[2];
+
     var isBase = key == "super";
-    var memberType = corto.metadata[type.members[key]];
     if (!memberType) {
       count ++;
       continue;
@@ -125,27 +135,55 @@ corto.expandMembers = function(dataType, type, index, prefix, rows) {
 
     var memberName;
     if (prefix) {
+      // If function is called recursively, prefix contains parent member expr
       memberName = prefix + "." + key;
     } else {
       memberName = key;
     }
 
     if (!isBase) {
+      // Count is the index at which the member can be found. The base member
+      // ('super') is not counted.
       index.push(count);
+    }
+
+    var m_readonly = false;
+    var m_const = false
+    var m_key = false;
+    var m_optional = false;
+    var unit = undefined;
+    var tags = undefined;
+
+    if (meta != undefined) {
+        // Parse modifiers
+        if (meta.m) {
+            m_key = meta.m.includes("k");
+            m_readonly = meta.m.includes("r");
+            m_const = meta.m.includes("c");
+            m_optional = meta.m.includes("o");
+        }
+        unit = meta.u;
+        tags = meta.t;
     }
 
     var elem = {
       name: memberName,
       rowName: key,
-      typeName: type.members[key],
+      typeName: member[1],
       index: function(index) {
         var r = [];
         for (var i = 0; i < index.length; i++) {
           r.push(index[i]);
         }
         return r;
-      }(index), // Deep copy index
+      } (index), // Deep copy index. Index tells headers where to find member value in an object
       type: memberType,
+      m_readonly: m_readonly,
+      m_const: m_const,
+      m_key: m_key,
+      m_optional: m_optional,
+      unit: unit,
+      tags: tags,
       rows: []
     };
 
@@ -162,7 +200,7 @@ corto.expandMembers = function(dataType, type, index, prefix, rows) {
       }
     }
 
-    if (!isBase) {      
+    if (!isBase) {
       index.pop();
     }
     count ++;
@@ -181,12 +219,14 @@ corto.buildTypeHeaders = function(dataType, type) {
     }
 
     if (type == undefined) {
-      console.error("type with id '%s' not found", dataType.id);
+      console.error("type with id " + dataType.id + " not found");
     }
 
     if (type.isComposite()) {
+      // Create headers for each member of a composite type
       corto.expandMembers(dataType, type, [], undefined, dataType.rows);
     } else {
+      // If not a composite type, just create a single 'value' column
       var elem = {
         name: "value",
         index: [0],
@@ -209,8 +249,11 @@ corto.insert = function(msg) {
       return;
     }
 
+    // Iterate all the types in the message with corresponding objects
     for (var i = 0; i < msg.value.data.length; i++) {
       var msgDataType = msg.value.data[i];
+
+      // Find object storage for type in subscriber
       var subDataType = subscriber.findType(msgDataType.type)
       if (!subDataType) {
         subDataType = {
@@ -220,6 +263,9 @@ corto.insert = function(msg) {
         subscriber.db.push(subDataType);
       }
 
+      // If kind is set, the message contains a description of the type as
+      // opposed to just the name of the type. Copy the contents of the type
+      // into the type db of the client.
       if (msgDataType.kind) {
         var type = new corto.type(msgDataType.kind);
         if (msgDataType.members) {
@@ -233,12 +279,15 @@ corto.insert = function(msg) {
         } else {
           type.reference = false;
         }
+
+        // Assign the type to the type db (not subscriber specific)
         corto.metadata[msgDataType.type] = type;
         if (msgDataType.elementType) {
           type.elementType = corto.metadata[msgDataType.elementType];
         }
       }
 
+      // If message contains set member, create/update objects
       if (msgDataType.set) {
         for (var j = 0; j < msgDataType.set.length; j++) {
           o = msgDataType.set[j];
@@ -261,10 +310,23 @@ corto.insert = function(msg) {
               subscriber.onUpdate(subObject);
             }
           }
+
           subObject.value = o.v;
+          subObject.readonly = false;
+          subObject.invalid = false;
+
+          if (o.a) { /* Check if object contains attributes */
+            if (o.a.includes("r")) {
+              subObject.readonly = true;
+            }
+            if (o.a.includes("i")) {
+              subObject.invalid = true;
+            }
+          }
         }
       }
 
+      // If message contains del member, delete objects
       if (msgDataType.del) {
         for(var obj = 0; obj < subDataType.objects.length; obj++) {
           for (var j = 0; j < msgDataType.del.length; j++) {
@@ -285,8 +347,10 @@ corto.insert = function(msg) {
       }
     }
 
-    // After all objects and types have been inserted, it is guaranteed that we
-    // have a consistent picture of everything. Now build the header caches
+    // After all objects and types have been inserted, it is guaranteed that client
+    // has a complete picture of all types. Now build the header caches. Header
+    // caches expand nested composite members until a list of headers is created
+    // where each column represents a scalar value.
     for (var i = 0; i < subscriber.db.length; i ++) {
       if (subscriber.db[i]) {
         corto.buildTypeHeaders(subscriber.db[i]);
@@ -355,7 +419,7 @@ corto.connectToWs = function(host, onOpen, onError, onClose) {
         }, corto.retryPeriod * corto.retries);
       }
     };
-    corto.ws.onmessage = function(ev) { 
+    corto.ws.onmessage = function(ev) {
       var msg = JSON.parse(ev.data);
       if (msg) {
         corto.recv(msg);
@@ -369,7 +433,7 @@ corto.connect = function(params) {
   var onOpen = params.onOpen;
   var onError = params.onError;
   var onClose = params.onClose;
-  
+
   corto.retries = 0;
 
   if (corto.retryConnection) {
