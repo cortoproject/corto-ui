@@ -845,7 +845,6 @@ Vue.component('object-table', {
       <table>
         <thead>
           <th class="object-link"><span class="table-header"></span></th>
-          <th class="object-link"><span class="table-header"></span></th>
           <th><span class="table-header">Id</span></th>
           <th v-for="header in type.headers" :key="header.name">
             <span class="table-header">{{header.name}}</span>
@@ -856,11 +855,6 @@ Vue.component('object-table', {
             <td class="object-link" @click="edit(object.id, false, event)">
               <span class="table-cell">
                 <md-icon>zoom_in</md-icon>
-              </span>
-            </td>
-            <td class="object-link" @click="navigate(object.id)">
-              <span class="table-cell">
-                <md-icon>link</md-icon>
               </span>
             </td>
             <td @click.stop="navigate(object.id, false)">
@@ -1045,14 +1039,11 @@ Vue.component('plugin', {
     <div id="browser-content" :class="'browser-show-editor-' + editor.enabled" :style="'width: calc(100% - ' + editor.width * editor.enabled + 'px);'" v-on:scroll="scroll">
       <object-index :show="showIndex" v-if="!editor.enabled" :rightOffset="0" :scroll="browserScroll" :scrollAbsolute="browserScrollAbsolute" :scrollHeight="browserHeight" :scrollView="browserScrollView"></object-index>
       <object-index :show="showIndex" v-if="editor.enabled" :rightOffset="editor.width" :scroll="browserScroll" :scrollAbsolute="browserScrollAbsolute" :scrollHeight="browserHeight" :scrollView="browserScrollView"></object-index>
-      <md-list class="md-double-line" v-if="db.length && validQuery">
-        <md-list-item class="md-active" v-for="type in db" v-if="type.objects.length" :key="type.id" md-expand-multiple>
+      <md-list class="md-double-line object-table-list" v-if="db.length && validQuery">
+        <md-list-item class="md-active object-table-frame" v-for="type in db" v-if="type.objects.length" :key="type.id" md-expand-multiple>
           <div class="md-list-text-container">
             <div class="type-link" @click="filterType(type.id)">
-              <span>
-                <md-icon>link</md-icon>&nbsp;
-              </span>
-              <span class="type-header">{{util.shortTypeId(type.id)}}</span>
+              <h2 class="type-header">{{util.shorterTypeId(type.id)}}</h2>
             </div>
             <span>
               <object-table :type="type" :connected="connected" v-on:edit="edit($event.link, $event.absolutePath)" v-on:unedit="clearEdit" v-on:navigate="navigate($event.link, $event.absolutePath)"></object-table>
@@ -1070,7 +1061,7 @@ Vue.component('plugin', {
         <md-icon>announcement</md-icon>&nbsp;&nbsp;Waiting for server '<span class="browser-no-objects-param">{{url}}</span>' to become available
       </div>
       <div id="browser-no-objects" v-else="!connected">
-        <md-icon>announcement</md-icon>&nbsp;&nbsp;Waiting for objects matching query '<span class="browser-no-objects-param">{{$refs.searchToolbar.getQueryString()}}</span>'
+        <md-icon>announcement</md-icon>&nbsp;&nbsp;No objects returned for query <span class="browser-no-objects-param">{{$refs.searchToolbar.getQueryString()}}</span>
       </div>
     </div>
     <object-editor

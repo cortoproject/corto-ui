@@ -287,7 +287,10 @@ img.menu-logo {
     position: absolute;
     top: 40;
     transition: 0.3s;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-style: solid;
+    border-color: #e0e0e0;
+    border-width: 1px;
+
 }
 
 .object-editor h2 {
@@ -429,6 +432,22 @@ div.object-index-header {
     cursor: pointer;
 }
 
+.type-header {
+    color: #3E5A68;
+    font-size: 1.0em;
+}
+
+.object-table-frame {
+    border-style: solid;
+    border-color: #e0e0e0;
+    border-width: 1px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+
+.object-table-list {
+    padding-top: 0px !important;
+}
+
 /* table styling */
 table {
     font-size: 13px;
@@ -487,9 +506,6 @@ span.table-ref-true-true {
     border-width: 0px;
     padding-bottom: 1px;
     cursor: pointer;
-    border-bottom-width: 1px;
-    border-style: dotted;
-    border-color: #00C4A3;
 }
 
 span.table-ref-true-false {

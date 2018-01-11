@@ -19,7 +19,7 @@ var util = {
 
     hasClass(element, cls) {
         return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
-    }, 
+    },
 
     // Shorten type ids
     shortTypeId(id) {
@@ -30,6 +30,12 @@ var util = {
         id = id.slice(11, id.length);
       }
       return id;
+    },
+
+    // Shorten type ids
+    shorterTypeId(id) {
+      var lastSlash = id.lastIndexOf("/") + 1;
+      return id.slice(lastSlash, id.length);
     },
 
     toggle(thisElem, id) {
@@ -54,7 +60,7 @@ var util = {
         if (current.slice(0, 1) == "[") {
             return parentMember + current;
         } else {
-            return parentMember + "." + current;            
+            return parentMember + "." + current;
         }
       } else {
         return current;
