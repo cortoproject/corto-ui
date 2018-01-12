@@ -116,6 +116,10 @@ corto.connected = function(msg) {
 corto.expandMembers = function(dataType, type, index, prefix, rows) {
   var count = 0;
 
+  if (!type.members) {
+      return 0;
+  }
+
   for (var i = 0; i < type.members.length; i++) {
     var member = type.members[i];
 
