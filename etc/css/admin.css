@@ -28,7 +28,7 @@ div.sidebar li {
 div.sidebar i {
     font-size: 2.5em !important;
     margin-left: -10px;
-    color: #20242b;
+    color: rgba(255, 255, 255, 0.80);
     cursor: pointer;
     transition: color 0.3s;
 }
@@ -489,13 +489,13 @@ span.table-cell {font-size: 1.1em; white-space: nowrap;}
 .table-header {color: #3E5A68; font-size: 1.0em; font-weight: bold; white-space: nowrap;}
 span.table-id {color: #414141;}
 
-span.table-boolean {color: #FF3B80;}
-span.table-int {color: #3E5A68}
-span.table-uint {color: #3E5A68}
-span.table-float {color: #3E5A68}
-span.table-enum {color: #FF3B80;}
-span.table-bitmask {color: #FF3B80;}
-span.table-text {color: #FF3B80;}
+span.table-boolean {color: #3D998B;}
+span.table-int {color: #3D998B}
+span.table-uint {color: #3D998B}
+span.table-float {color: #3D998B}
+span.table-enum {color: #CB14CC;}
+span.table-bitmask {color: #CB14CC;}
+span.table-text {color: #FF40A1;}
 span.table-struct {color: #6E8A98; white-space: nowrap;}
 span.table-list {color: #6E8A98; white-space: nowrap;}
 span.table-sequence {color: #6E8A98; white-space: nowrap;}
@@ -514,6 +514,7 @@ span.table-ref-true-false {
 }
 
 span.table-unit {
+    color: #3a7d76;
 }
 
 div.editor-actions {
