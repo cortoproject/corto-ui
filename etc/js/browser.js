@@ -400,6 +400,8 @@ Vue.component('object-value', {
           json = json.slice(0, 40) + "...";
         }
         return json;
+      } else if (kind == "range") {
+        value = value[0];
       }
       this.lastValue = value;
       return value;
@@ -474,7 +476,7 @@ Vue.component('object-value', {
         </md-select>
       </md-input-container>
     </div>
-    <div v-else @click="change" @keyup="edit">
+    <div v-else @click="change" @keyup="edit" class="table-value-container">
       <span
         :class="'table-cell ' + 'table-' + header.type.kind + ' table-ref-false table-editor-' + editor"
         :contenteditable="editor && header.type.isPrimitive()">
@@ -485,6 +487,34 @@ Vue.component('object-value', {
         {{header.unit[2]}}
       </span>
     </div>
+  `
+});
+
+Vue.component('object-range-indicator', {
+  props: ['header', 'value', 'offset'],
+  methods: {
+    range_color(value) {
+        var last_value = value[0];
+        var lo = value[1];
+        var hi = value[2];
+        var _class = "ok";
+
+        if (last_value < lo[1]) {
+            _class = "lo-high";
+        } else if (last_value < lo[0]) {
+            _class = "lo-medium";
+        } else if (last_value > hi[1]) {
+            _class = "hi-high";
+        } else if (last_value > hi[0]) {
+            _class = "hi-medium";
+        }
+
+        return _class;
+    }
+  },
+  template: `
+      <div v-if="header.type.kind == 'range'" :class="'range range-' + range_color(value)" :style="'top: ' + offset">
+      </div>
   `
 });
 
@@ -536,6 +566,8 @@ Vue.component('object-row-template', {
         <span :class="headerClass()">{{row.rowName}}</span>
       </td>
       <td class="editor-value">
+        <object-range-indicator :value="corto.getMember(value, row.index)" :header="row" :offset="-10">
+        </object-range-indicator>
         <object-value
           ref="objectValue"
           :value="corto.getMember(value, row.index)"
@@ -863,6 +895,8 @@ Vue.component('object-table', {
               </span>
             </td>
             <td v-for="header in type.headers" v-if="header.index" :key="header">
+                <object-range-indicator :value="object.getMember(header.index)" :header="header" :offset="-15">
+                </object-range-indicator>
                 <object-value
                   :value="object.getMember(header.index)"
                   :header="header"

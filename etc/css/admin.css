@@ -493,12 +493,24 @@ span.table-boolean {color: #3D998B;}
 span.table-int {color: #3D998B}
 span.table-uint {color: #3D998B}
 span.table-float {color: #3D998B}
+span.table-range {color: #3D998B}
 span.table-enum {color: #CB14CC;}
 span.table-bitmask {color: #CB14CC;}
 span.table-text {color: #FF40A1;}
 span.table-struct {color: #6E8A98; white-space: nowrap;}
 span.table-list {color: #6E8A98; white-space: nowrap;}
 span.table-sequence {color: #6E8A98; white-space: nowrap;}
+
+div.range {
+    min-height: 5px;
+    position: relative;
+}
+
+div.range-ok { background-color: #B3FF74; }
+div.range-lo-medium { background-color: #69E5E8; }
+div.range-lo-high { background-color: #A374FF; }
+div.range-hi-medium { background-color: #E8B95E; }
+div.range-hi-high { background-color: #FF7480; }
 
 /* reference */
 span.table-ref-true-true {
@@ -588,6 +600,9 @@ tr.table-value-changed:hover {background-color: #EDF7F5 !important;}
 tr.table-value-readonly {
     background-color: #f8f9fc;
     cursor: default;
+}
+div.table-value-container {
+    white-space: nowrap;
 }
 
 div.search-parent input.md-input[disabled="disabled"] {
