@@ -7,3 +7,4 @@ httprouter/Router service :/
   int16 construct()
   GET home: "/", file = "index.html"
   GET res:  "/{path:(js|css|images)}/{:file}"
+  GET plugin: "/plugin/{:file}"

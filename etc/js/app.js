@@ -1,5 +1,7 @@
 Vue.use(VueMaterial)
 
+var db = [];
+
 Vue.material.registerTheme('default', {
   primary: {
     color: "teal",
@@ -30,7 +32,7 @@ Vue.component('error-snackbar', {
     // Clear error
     clear() {
       this.$refs.snackbar.close();
-    }    
+    }
   },
   data: function() {
     return {
@@ -61,7 +63,7 @@ Vue.component('login-dialog', {
       this.$emit('connect', {'url': url});
     },
     cancel(ref) {
-      this.$refs.dialog.close();      
+      this.$refs.dialog.close();
     }
   },
 
@@ -90,10 +92,51 @@ Vue.component('login-dialog', {
     </md-dialog>`
 });
 
+/* Active plugin element */
+var plugin_el = undefined;
+
+/* Plugin interface */
+Vue.component('plugin', {
+    props: ['active_plugin', 'connected', 'url', 'query_valid', 'query_string', 'query_object', 'db'],
+
+    /* Forward methods of plugin interface to plugin */
+    methods: {
+        search($event) {
+            if (plugin_el) plugin_el.child.search($event);
+        },
+        reset($event) {
+            if (plugin_el) plugin_el.child.reset($event);
+        }
+    },
+
+    render: function(createElement) {
+      plugin_el = createElement(
+        'plugin-' + this.active_plugin, {
+          props: {
+            connected: this.connected,
+            url: this.url,
+            query_valid: this.query_valid,
+            query_string: this.query_string,
+            query_object: this.query_object,
+            db: this.db
+          },
+          on: {
+            navigate: function(event) {this.$emit('navigate', event)}.bind(this),
+          }
+        }
+      );
+      return plugin_el;
+    }
+});
+
 var app = new Vue({
   el: '#app',
-  methods: {
 
+  created() {
+    this.load_plugin("browser");
+  },
+
+  methods: {
     // Connect to a server
     connect($event) {
       if ($event == undefined) {
@@ -102,9 +145,9 @@ var app = new Vue({
       document.title = $event.url;
       this.host = $event.url;
       corto.connect({
-        host: $event.url, 
+        host: $event.url,
         onConnected: function(msg) {
-          this.$refs.plugin.reset();
+          this.$refs.sidebar.reset();
         }.bind(this),
         onClose: function(msg) {
           this.$refs.errorSnackbar.throw("URL " + $event.url + " is unavailable");
@@ -121,9 +164,46 @@ var app = new Vue({
       this.$refs.plugin.reset();
     },
 
-    // Query is executed
+    // Nav changed query
     search($event) {
       this.setTitle($event.parent, $event.expr, $event.type);
+
+      // Set query data
+      this.query_valid = true;
+      this.query_string = this.$refs.nav.getQueryString();
+      this.query_object = this.$refs.nav.getQuery();
+
+      // Subscribe for new query
+      corto.unsubscribe({id:"nav"});
+      corto.subscribe({
+        id: "nav",
+        parent: $event.parent,
+        expr: $event.expr,
+        type: $event.type,
+        db: this.db,
+        instance: this,
+        summary: true,
+        onError: function(error) {
+          this.throw(error, 5000);
+        }.bind(this)
+      });
+
+      // Forward to plugin
+      this.$refs.plugin.search($event);
+    },
+
+    // Nav reported invalid query
+    invalid_query() {
+      this.query_valid = false;
+    },
+
+    // Plugin requests new query
+    navigate(event) {
+        if (!event.select && !event.from && !event.type) {
+            this.$refs.nav.setQueryFromUrl();
+        } else {
+            this.$refs.nav.setQuery(event.from, event.expr, event.type);
+        }
     },
 
     // Error is thrown
@@ -141,12 +221,39 @@ var app = new Vue({
       this.$refs.menuSidenav.toggle();
     },
 
+    load_plugin(plugin_id) {
+        var plugin = document.createElement("script");
+        plugin.setAttribute("id", "plugin-ref");
+        plugin.setAttribute("type", "text/javascript");
+        plugin.setAttribute("src", "plugin/" + plugin_id + ".js");
+        document.body.appendChild(plugin);
+    },
+
+    unload_plugin() {
+        var plugin = document.getElementById("plugin-ref");
+        if (plugin) {
+            plugin.parentNode.removeChild(plugin);
+        }
+    },
+
+    // Change active plugin
+    set_plugin(event) {
+      console.log("[ activate plugin " + event.plugin_id + " ]");
+          this.unload_plugin();
+          this.load_plugin(event.plugin_id);
+    },
+
+    plugin_loaded(plugin_id) {
+        console.log("[ plugin loaded: " + plugin_id + " ]");
+        this.active_plugin = plugin_id;
+    },
+
     // Update the browser history
     updateHistory(parent, expr, type) {
       if (!parent) {
         parent = "/";
       }
-    
+
       if (window.location.protocol == "http:") {
         var newUrl = window.location.host + "/?select=" + expr + "&from=" + parent;
         if (type) {
@@ -183,8 +290,12 @@ var app = new Vue({
 
   data: {
     host: window.location.host,
-    db: table_db,
     connected: false,
+    active_plugin: "browser",
+    query_string: undefined,
+    query_object: undefined,
+    query_valid: true,
+    db: db
   }
 });
 
