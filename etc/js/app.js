@@ -102,10 +102,9 @@ Vue.component('plugin', {
     /* Forward methods of plugin interface to plugin */
     methods: {
         search($event) {
-            if (plugin_el) plugin_el.child.search($event);
-        },
-        reset($event) {
-            if (plugin_el) plugin_el.child.reset($event);
+            if (plugin_el && plugin_el.child && plugin_el.child.search) {
+              plugin_el.child.search($event);
+            }
         }
     },
 
@@ -147,6 +146,7 @@ var app = new Vue({
       corto.connect({
         host: $event.url,
         onConnected: function(msg) {
+          this.navigate({});
           this.$refs.sidebar.reset();
         }.bind(this),
         onClose: function(msg) {
@@ -161,7 +161,7 @@ var app = new Vue({
 
     // Back/Forward button pressed
     move() {
-      this.$refs.plugin.reset();
+      this.navigate({});
     },
 
     // Nav changed query
@@ -183,12 +183,15 @@ var app = new Vue({
         db: this.db,
         instance: this,
         summary: true,
+        onOk: function() {
+            this.$refs.errorSnackbar.clear();
+            this.$refs.plugin.search($event);
+        }.bind(this),
         onError: function(error) {
           this.throw(error, 5000);
         }.bind(this)
       });
 
-      // Forward to plugin
       this.$refs.plugin.search($event);
     },
 
@@ -243,9 +246,16 @@ var app = new Vue({
           this.load_plugin(event.plugin_id);
     },
 
-    plugin_loaded(plugin_id) {
+    plugin_loaded(plugin_id, init_func) {
         console.log("[ plugin loaded: " + plugin_id + " ]");
         this.active_plugin = plugin_id;
+        if (this.plugins_loaded.indexOf(plugin_id) == -1) {
+            if (init_func != undefined) {
+                init_func();
+            }
+            this.plugins_loaded.push(plugin_id);
+        }
+        this.$refs.sidebar.plugin_loaded(plugin_id);
     },
 
     // Update the browser history
@@ -295,7 +305,8 @@ var app = new Vue({
     query_string: undefined,
     query_object: undefined,
     query_valid: true,
-    db: db
+    db: db,
+    plugins_loaded: []
   }
 });
 

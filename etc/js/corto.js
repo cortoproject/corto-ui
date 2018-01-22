@@ -48,7 +48,7 @@ corto.msg_delete = function(id) {
 }
 
 // Subscriber class
-corto.subscriber = function(db, parent, expr, type, offset, limit, onUpdate, onDelete, onError) {
+corto.subscriber = function(db, parent, expr, type, offset, limit, onUpdate, onDelete, onOk, onError) {
   this.parent = parent;
   this.expr = expr;
   this.type = type;
@@ -58,6 +58,7 @@ corto.subscriber = function(db, parent, expr, type, offset, limit, onUpdate, onD
   this.enabled = false;
   this.onUpdate = onUpdate;
   this.onDelete = onDelete;
+  this.onOk = onOk;
   this.onError = onError;
 
   this.findType = function(id) {
@@ -83,19 +84,23 @@ corto.type = function(kind) {
 
 // Get member from a value
 corto.getMember = function(value, index) {
-  orig = value;
-  if (value instanceof Array) {
-    for (var i = 0; i < index.length; i ++) {
-      if (value != undefined) {
-        value = value[index[i]];
-      } else {
-        console.log(
-          "error: failed to parse '" + JSON.stringify(orig) + "' with index '" + JSON.stringify(index) + "'");
-        break;
+  if (value != undefined && index != undefined) {
+    orig = value;
+    if (value instanceof Array) {
+      for (var i = 0; i < index.length; i ++) {
+        if (value != undefined) {
+          value = value[index[i]];
+        } else {
+          console.log(
+            "error: failed to parse '" + JSON.stringify(orig) + "' with index '" + JSON.stringify(index) + "'");
+          break;
+        }
       }
     }
+    return value;
+  } else {
+    return undefined;
   }
-  return value;
 }
 
 // Object class
@@ -367,6 +372,9 @@ corto.subok = function(msg) {
   if (msg.value.id in corto.subscribers) {
     subscriber = corto.subscribers[msg.value.id];
     subscriber.enabled = true;
+    if (subscriber.onOk) {
+        subscriber.onOk();
+    }
   }
 }
 
@@ -468,10 +476,13 @@ corto.subscribe = function(params) {
   var onDefine = params.onDefine;
   var onUpdate = params.onUpdate;
   var onDelete = params.onDelete;
+  var onOk = params.onOk;
   var onError = params.onError;
   var summary = params.summary;
+  corto.subscribers[id] =
+    new corto.subscriber(db, parent, expr, type, offset, limit, onUpdate, onDelete, onOk, onError);
+
   corto.send(new corto.msg_subscribe(id, parent, expr, type, offset, limit, summary));
-  corto.subscribers[id] = new corto.subscriber(db, parent, expr, type, offset, limit, onUpdate, onDelete, onError);
 }
 
 corto.unsubscribe = function(params) {

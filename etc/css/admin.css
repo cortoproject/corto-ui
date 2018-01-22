@@ -7,6 +7,10 @@
     z-index: 99;
 }
 
+li.active-shortcut i {
+    color: #00C4A3 !important;
+}
+
 div.sidebar {
     width: 100%;
     background-color: #2A2F36;
@@ -28,14 +32,14 @@ div.sidebar li {
 div.sidebar i {
     font-size: 2.5em !important;
     margin-left: -10px;
-    color: rgba(255, 255, 255, 0.80);
+    color: rgba(255, 255, 255, 0.50);
     cursor: pointer;
     transition: color 0.3s;
 }
 div.sidebar i:hover {
     font-size: 2.5em !important;
     margin-left: -10px;
-    color: #000;
+    color: rgba(255, 255, 255, 0.80);;
 }
 
 #app-content {
