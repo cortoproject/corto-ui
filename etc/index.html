@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>corto connect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="images/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,300">
@@ -14,15 +15,18 @@
   </head>
   <body>
     <div id="app">
-      <div id="app-sidebar">
+      <div id="app-sidebar" :style="'display:' + (app_only ? 'none' : 'default')">
         <sidebar ref="sidebar" v-on:set_plugin="set_plugin"/>
       </div>
-      <div id="app-content">
+      <div id="app-content"
+        :style="'left: ' + (app_only ? '0px' : '65px') + ';' +
+                'width: ' + (app_only ? '100%' : 'calc(100% - 65px)')">
         <login-dialog ref="loginDialog" v-on:connect="connect"></login-dialog>
         <error-snackbar ref="errorSnackbar"></error-snackbar>
-        <search-toolbar
+        <search-toolbar :style="'display:' + (app_only ? 'none' : 'default')"
           ref="nav"
           :connected="connected"
+          :hidden="app_only"
           :url="host"
           v-on:search="search"
           v-on:invalidQuery="invalid_query"

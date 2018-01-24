@@ -132,7 +132,21 @@ var app = new Vue({
   el: '#app',
 
   created() {
-    this.load_plugin("browser");
+    var pathname = window.location.pathname.substring(0, 4);
+    var plugin = "browser";
+
+    this.app_only = pathname == "/app";
+
+    if (this.app_only) {
+        pathname = window.location.pathname;
+        plugin = pathname.substring(4, pathname.length);
+        if (plugin[0] == '/') {
+            plugin = plugin.substring(1, plugin.length);
+        }
+        plugin = plugin.split("/")[0];
+    }
+
+    this.load_plugin(plugin);
   },
 
   methods: {
@@ -265,7 +279,21 @@ var app = new Vue({
       }
 
       if (window.location.protocol == "http:") {
-        var newUrl = window.location.host + "/?select=" + expr + "&from=" + parent;
+        var newUrl = "?select=" + expr + "&from=" + parent;
+
+        // Append path
+        var pathname = window.location.pathname;
+
+        if (pathname != "/") {
+            if (pathname[pathname.length - 1] != '/') {
+                newUrl = "/" + newUrl;
+            }
+            newUrl = pathname + newUrl;
+        }
+
+        // Append protocol & host
+        newUrl = window.location.host + newUrl;
+
         if (type) {
           newUrl += "&type=" + type;
         }
@@ -306,7 +334,8 @@ var app = new Vue({
     query_object: undefined,
     query_valid: true,
     db: db,
-    plugins_loaded: []
+    plugins_loaded: [],
+    app_only: false
   }
 });
 

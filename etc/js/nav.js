@@ -9,7 +9,7 @@ var queryStore = {
 }
 
 Vue.component('query-input', {
-  props: ['connected'],
+  props: ['connected', 'hidden'],
   methods: {
     highlightQuery(input, qObj) {
       var q = "";
@@ -74,8 +74,10 @@ Vue.component('query-input', {
       } else {
         this.$emit('search', {parent: queryObj.from, expr: queryObj.select, type: queryObj.type});
       }
-      this.applyHighlight(this.$refs.queryInput, query, queryObj);
-      util.moveCaret(this.$refs.queryInput, query.length);
+      if (!this.hidden) {
+          this.applyHighlight(this.$refs.queryInput, query, queryObj);
+          util.moveCaret(this.$refs.queryInput, query.length);
+      }
     },
     onKeyup($event) {
       if ($event.key == "Enter") {
@@ -138,7 +140,7 @@ Vue.component('query-input', {
 });
 
 Vue.component('search-toolbar', {
-  props: ['connected', 'url'],
+  props: ['connected', 'url', 'hidden'],
   methods: {
     connect() {
       this.$emit('login');
@@ -260,7 +262,7 @@ Vue.component('search-toolbar', {
             <md-icon>explore</md-icon>
           </md-button>
           <md-whiteframe md-elevation="1" :class="'search search-parent' + (connected ? '' : ' search-disconnected') + (queryStore.state.valid ? '' : ' search-invalid')" :disabled="!connected" style="visibility: visible">
-            <query-input ref="queryInput" :connected="connected" v-on:search="$emit('search', $event)" v-on:invalidQuery="$emit('invalidQuery', $event)"/>
+            <query-input ref="queryInput" :hidden="hidden" :connected="connected" v-on:search="$emit('search', $event)" v-on:invalidQuery="$emit('invalidQuery', $event)"/>
           </md-whiteframe>
         </div>
       </md-toolbar>

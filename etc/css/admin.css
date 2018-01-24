@@ -43,10 +43,7 @@ div.sidebar i:hover {
 }
 
 #app-content {
-    position: absolute;
-    top: 0px;
-    left: 65px;
-    width: calc(100% - 65px);
+    position: relative;
 }
 
 div.searchToolbar {

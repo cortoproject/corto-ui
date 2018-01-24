@@ -1,10 +1,13 @@
 in package /corto/ui
 use corto/httprouter
 
-x/token file: "[-a-zA-Z_0-9\\. \\/]*"
+x/token path: "[-a-zA-Z_0-9\\. \\/]*"
+x/token file: "[-a-zA-Z_0-9\\.]*"
 
 httprouter/Router service :/
   int16 construct()
   GET home: "/", file = "index.html"
-  GET res:  "/{path:(js|css|images)}/{:file}"
-  GET plugin: "/plugin/{:file}"
+  GET app_files: "/app/{:file}/{:path}"
+  GET app: "/app/{:file}", file = "index.html"
+  GET res:  "/{path:(js|css|images)}/{file:path}"
+  GET plugin: "/plugin/{:path}"
