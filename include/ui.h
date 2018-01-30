@@ -8,7 +8,6 @@
 #define CORTO_UI_H
 
 #include <corto/corto.h>
-#include <corto/corto.h>
 #include <corto/ui/_project.h>
 #include <corto/x/c/c.h>
 #include <corto/httprouter/c/c.h>

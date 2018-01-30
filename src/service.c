@@ -39,7 +39,7 @@ corto_string ui_service_plugin(
     }
 
     /* Lookup package etc directory */
-    char *etc = corto_locate(plugin_name, NULL, CORTO_LOCATION_ETC);
+    const char *etc = corto_locate(plugin_name, NULL, CORTO_LOCATE_ETC);
     if (!etc) {
         corto_warning("plugin '%s' not found", plugin_name);
         httpserver_HTTP_Request_setStatus(request, 404);
