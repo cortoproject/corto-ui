@@ -16,7 +16,7 @@ corto.msg_connect = function() {
   this.value.version = "1.0";
 }
 
-corto.msg_subscribe = function(id, parent, expr, type, offset, limit, summary) {
+corto.msg_subscribe = function(id, parent, expr, type, offset, limit, summary, yield_unknown) {
   this.type = "ws/sub";
   this.value = {};
   this.value.id = id;
@@ -26,6 +26,7 @@ corto.msg_subscribe = function(id, parent, expr, type, offset, limit, summary) {
   this.value.offset = offset;
   this.value.limit = limit;
   this.value.summary = summary;
+  this.value.yield_unknown = yield_unknown;
 }
 
 corto.msg_unsubscribe = function(id) {
@@ -482,7 +483,7 @@ corto.subscribe = function(params) {
   corto.subscribers[id] =
     new corto.subscriber(db, parent, expr, type, offset, limit, onUpdate, onDelete, onOk, onError);
 
-  corto.send(new corto.msg_subscribe(id, parent, expr, type, offset, limit, summary));
+  corto.send(new corto.msg_subscribe(id, parent, expr, type, offset, limit, summary, true));
 }
 
 corto.unsubscribe = function(params) {
