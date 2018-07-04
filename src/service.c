@@ -10,7 +10,7 @@ int16_t ui_service_construct(
 
 corto_string ui_service_home(
     ui_service this,
-    httpserver_HTTP_Request *request,
+    corto_httpserver_HTTP_Request *request,
     ui_home *data)
 {
     return httprouter_route_defaultAction(ui_service_home_o, this, request);
@@ -18,7 +18,7 @@ corto_string ui_service_home(
 
 corto_string ui_service_res(
     ui_service this,
-    httpserver_HTTP_Request *request,
+    corto_httpserver_HTTP_Request *request,
     ui_res *data)
 {
     return httprouter_route_fileAction(
@@ -27,7 +27,7 @@ corto_string ui_service_res(
 
 corto_string ui_service_plugin(
     ui_service this,
-    httpserver_HTTP_Request *request,
+    corto_httpserver_HTTP_Request *request,
     ui_plugin *data)
 {
     char *plugin_name = corto_asprintf("driver/ui/%s", data->path);
@@ -58,7 +58,7 @@ corto_string ui_service_plugin(
 
 corto_string ui_service_app(
     ui_service this,
-    httpserver_HTTP_Request *request,
+    corto_httpserver_HTTP_Request *request,
     ui_app *data)
 {
     /* Redirect to path with slash at the end */
@@ -75,7 +75,7 @@ corto_string ui_service_app(
 
 corto_string ui_service_app_files(
     ui_service this,
-    httpserver_HTTP_Request *request,
+    corto_httpserver_HTTP_Request *request,
     ui_app_files *data)
 {
     httpserver_HTTP_Request r = *request;

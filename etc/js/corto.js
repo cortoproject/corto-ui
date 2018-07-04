@@ -206,7 +206,7 @@ corto.expandMembers = function(dataType, type, index, prefix, rows) {
     } else {
       dataType.headers.push(elem);
       if (memberType.isCollection() && !memberType.reference) {
-        corto.buildTypeHeaders(elem, memberType.elementType);
+        corto.buildTypeHeaders(elem, memberType.element_type);
       }
     }
 
@@ -292,8 +292,8 @@ corto.insert = function(msg) {
 
         // Assign the type to the type db (not subscriber specific)
         corto.metadata[msgDataType.type] = type;
-        if (msgDataType.elementType) {
-          type.elementType = corto.metadata[msgDataType.elementType];
+        if (msgDataType.element_type) {
+          type.element_type = corto.metadata[msgDataType.element_type];
         }
       }
 

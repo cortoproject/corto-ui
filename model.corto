@@ -1,0 +1,16 @@
+in corto.ui
+use corto.httprouter
+
+x.token path: "[-a-zA-Z_0-9\\. \\/]*"
+x.token file: "[-a-zA-Z_0-9\\.]*"
+
+httprouter.Router service {
+    construct() int16
+
+GET
+    home: "/", file: "index.html"
+    app_files: "/app/{:file}/{:path}"
+    app: "/app/{:file}", file: "index.html"
+    res:  "/{path:(js|css|images)}/{file:path}"
+    plugin: "/plugin/{:path}"
+}
